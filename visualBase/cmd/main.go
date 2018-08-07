@@ -2,6 +2,7 @@ package main
 
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/home"
+	"LearningMYSQLandGOLANG/visualBase/pkg/new"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"net/http"
 
@@ -158,8 +159,8 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, err))
-	/*http.HandleFunc("/new", new)
-	http.HandleFunc("/view", view)
+	http.HandleFunc("/new", new.New)
+	/*http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)
 	http.HandleFunc("/insert", insert)
 	http.HandleFunc("/update", update)
