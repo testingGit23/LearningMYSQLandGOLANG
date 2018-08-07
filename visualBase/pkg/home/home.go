@@ -25,6 +25,7 @@ func Home(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 				var p opendb.Payment
 				err = rows.Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
 				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
 
 				}
 				allPayments = append(allPayments, p)
