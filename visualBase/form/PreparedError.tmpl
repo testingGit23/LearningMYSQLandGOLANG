@@ -1,0 +1,20 @@
+{{ define "ScanError" }}
+ <!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>List of all Payments</title>
+        <meta charset="UTF-8" />
+    </head>
+    <body>
+    <a href="/">HOME</a> 
+    <h1> ERROR </h1>
+    <h2>The DataBase with details:</h2>
+     <h3>Host:{{ .Host }}</h3>
+      <h3>Port:{{ .Port }}</h3>
+       <h3>User:{{ .User }}</h3>
+        <h3>Password:{{ .Password }}</h3>
+    <h3>Name:{{ .Name }}</h3>
+      <h2>cannot be prepared</h2>
+
+  {{ template "Footer" }}
+{{ end }}
