@@ -109,6 +109,24 @@ func addmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func viewmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func (w http.ResponseWriter, r *http.Request) {
+	db := selectDatabase()
+	username := r.URL.Query().Get("username")
+	rows, err := db.Query("SELECT * FROM merchants WHERE Username=(?)", username)
+	if err != nil {
+		return
+	}
+	var m Merchant
+	for rows.Next() {
+		err = rows.Scan(&m.Username, &m.Username, &m.Email, &m.Country, &m.Age, &m.Name, &m.Lastname)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+}
+
 func home(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		rows, err := db.Query("SELECT * FROM payments")
@@ -280,6 +298,7 @@ func main() {
 	http.HandleFunc("/editmerchant", editmerchant(db))
 	http.HandleFunc("/updatemerchant", updatemerchant(db))
 	http.HandleFunc("/newmerchant", newmerchant(db))
+	http.HandleFunc("/viewmerchant", viewmerchant(db))
 	http.HandleFunc("/new", new)
 	http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)
