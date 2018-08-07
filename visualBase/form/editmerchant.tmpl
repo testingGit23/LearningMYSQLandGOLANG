@@ -1,7 +1,7 @@
-{{ define "Edit" }}
+{{ define "editmerchant" }}
         {{ template "Header" }}
         {{ template "Menu" }}
-<h2>Edit Payment</h2>
+<h2>Edit Merchant</h2>
 <form method="POST" action="update">
 <input type="hidden" name="uid" value="{{ .Username }}" />
 <label> Username </label><input type="text" name="username" value="{{ .Username }}"><br />

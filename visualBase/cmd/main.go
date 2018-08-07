@@ -57,7 +57,7 @@ func newmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			Age := r.FormValue("age")
 			Name := r.FormValue("name")
 			Lastname := r.FormValue("lastname")
-			insForm, err := db.Prepare("INSERT INTO merchants(Id,mearchantUsername, mearchantEmail, mearchantCountry, mearchantAge, firstName, lastname ) VALUES(?,?,?,?,?,?,?)")
+			insForm, err := db.Prepare("INSERT INTO merchants(Username,mearchantUsername, mearchantEmail, mearchantCountry, mearchantAge, firstName, lastname ) VALUES(?,?,?,?,?,?,?)")
 			if err != nil {
 				panic(err.Error())
 			}
