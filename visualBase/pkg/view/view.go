@@ -47,39 +47,27 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 		scanningPaymentsTable(rows, &p, detailsAboutDB, w)
 
 		valutes, _ := selectAllCurrencies(db)
-
-		for _, inDenars := range valutes {
-			var sumFromQuerry float64
-			var pom float64
-			var temp float64
-			err := db.QueryRow("SELECT SUM(amount) FROM payments WHERE merchantUsername=(?) AND currency=(?)", p.Merchant, inDenars).Scan(&temp)
-			if err != nil {
-				temp = 0
-			}
-			sumFromQuerry = temp
-
-			var InDenars float64
-
-			InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
-			/*currencyInDenars, err := db.Query("SELECT inDenars FROM currencies WHERE currency=(?)", inDenars)
-			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
-			}
-
-			for currencyInDenars.Next() {
-				//var temp float64
-				err = currencyInDenars.Scan(&temp)
+		/*
+			for _, inDenars := range valutes {
+				var sumFromQuerry float64
+				var pom float64
+				var temp float64
+				err := db.QueryRow("SELECT SUM(amount) FROM payments WHERE merchantUsername=(?) AND currency=(?)", p.Merchant, inDenars).Scan(&temp)
 				if err != nil {
-					opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
+					temp = 0
 				}
-				InDenars = temp
-			}*/
-			//defer currencyInDenars.Close()
-			pom = sumFromQuerry * InDenars
-			p.Total = p.Total + pom
+				sumFromQuerry = temp
 
-		}
+				var InDenars float64
+
+				InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
+
+				pom = sumFromQuerry * InDenars
+				p.Total = p.Total + pom
+
+			}*/
 		//fmt.Println(total)
+		p.Total = calculatingTotal(valutes, db, w, detailsAboutDB, p.Merchant)
 
 		opendb.Tmpl.ExecuteTemplate(w, "Show", p)
 	}
@@ -111,4 +99,28 @@ func selectingInDenarsFromCurrenciesTable(InDenars *float64, db *sql.DB, inDenar
 
 	}
 	return temp
+}
+
+func calculatingTotal(valutes []string, db *sql.DB, w http.ResponseWriter, detailsAboutDB opendb.DbDetails, merchant string) float64 {
+	var ret float64
+	for _, inDenars := range valutes {
+		var sumFromQuerry float64
+		var pom float64
+		var temp float64
+
+		err := db.QueryRow("SELECT SUM(amount) FROM payments WHERE merchantUsername=(?) AND currency=(?)", merchant, inDenars).Scan(&temp)
+		if err != nil {
+			temp = 0
+		}
+		sumFromQuerry = temp
+
+		var InDenars float64
+
+		InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
+
+		pom = sumFromQuerry * InDenars
+		ret = ret + pom
+
+	}
+	return ret
 }
