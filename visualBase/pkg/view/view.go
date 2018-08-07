@@ -47,26 +47,7 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 		scanningPaymentsTable(rows, &p, detailsAboutDB, w)
 
 		valutes, _ := selectAllCurrencies(db)
-		/*
-			for _, inDenars := range valutes {
-				var sumFromQuerry float64
-				var pom float64
-				var temp float64
-				err := db.QueryRow("SELECT SUM(amount) FROM payments WHERE merchantUsername=(?) AND currency=(?)", p.Merchant, inDenars).Scan(&temp)
-				if err != nil {
-					temp = 0
-				}
-				sumFromQuerry = temp
 
-				var InDenars float64
-
-				InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
-
-				pom = sumFromQuerry * InDenars
-				p.Total = p.Total + pom
-
-			}*/
-		//fmt.Println(total)
 		p.Total = calculatingTotal(valutes, db, w, detailsAboutDB, p.Merchant)
 
 		opendb.Tmpl.ExecuteTemplate(w, "Show", p)
@@ -113,9 +94,7 @@ func calculatingTotal(valutes []string, db *sql.DB, w http.ResponseWriter, detai
 			temp = 0
 		}
 		sumFromQuerry = temp
-
 		var InDenars float64
-
 		InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
 
 		pom = sumFromQuerry * InDenars

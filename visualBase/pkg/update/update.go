@@ -24,7 +24,7 @@ func Update(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.
 			id := r.FormValue("uid")
 			insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
 			if err != nil {
-				panic(err.Error())
+				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 			}
 			insForm.Exec(Merchant, Currency, Amount, Date, id)
 			log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
