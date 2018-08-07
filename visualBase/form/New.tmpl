@@ -1,0 +1,13 @@
+{{ define "New" }}
+  {{ template "Header" }}
+    {{ template "Menu" }} 
+   <h2>New Payment</h2>  
+    <form method="POST" action="insert">
+      <label> Merchant </label><input type="text" name="merchant" /><br />
+      <label> Currency </label><input type="text" name="currency" /><br />
+      <label> Amount </label><input type="text" name="amount" /><br />
+      <label> Date </label><input type="text" name="date" /><br />
+      <input type="submit" value="Save user" />
+    </form>
+  {{ template "Footer" }}
+{{ end }}
