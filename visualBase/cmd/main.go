@@ -27,6 +27,15 @@ type Payment struct {
 	Date     string
 	Total    float64
 }
+type Merchant struct {
+	Id       int
+	Username string
+	Email    string
+	Country  string
+	Age      int
+	Name     string
+	Lastname string
+}
 
 func selectDatabase() (db *sql.DB) {
 	db, err := sql.Open("mysql",
@@ -37,6 +46,28 @@ func selectDatabase() (db *sql.DB) {
 	//fmt.Println(db)
 	//defer db.Close()
 	return db
+}
+func newmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db := selectDatabase()
+		if r.Method == "POST" {
+			Username := r.FormValue("username")
+			Email := r.FormValue("email")
+			Country := r.FormValue("country")
+			Age := r.FormValue("age")
+			Name := r.FormValue("name")
+			Lastname := r.FormValue("lastname")
+			insForm, err := db.Prepare("INSERT INTO merchants(Id,mearchantUsername, mearchantEmail, mearchantCountry, mearchantAge, firstName, lastname ) VALUES(?,?,?,?,?,?,?)")
+			if err != nil {
+				panic(err.Error())
+			}
+			insForm.Exec(0, Username, Email, Country, Age, Name, Lastname)
+			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Name: " + Name + " | Lastname: " + Lastname)
+		}
+		defer db.Close()
+		http.Redirect(w, r, "/", 301)
+		tmpl.ExecuteTemplate(w, "newmearchant", nil)
+		}
 }
 
 func home(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
@@ -206,6 +237,7 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home(db))
+	http.HandleFunc("/", newmerchant(db))
 	http.HandleFunc("/new", new)
 	http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)
