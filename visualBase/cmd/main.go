@@ -14,11 +14,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-/*
-
-
- */
-
 func main() {
 	detailsAboutDB := opendb.DbDetails{Host: "localhost", Port: "3306", User: opendb.User, Password: opendb.Password, Name: opendb.DbName}
 	db, e := opendb.OpenDB()
