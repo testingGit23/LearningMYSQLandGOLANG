@@ -44,12 +44,7 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 
 		}
 		var p opendb.Payment
-		for rows.Next() {
-			err = rows.Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
-			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
-			}
-		}
+		scanningPaymentsTable(rows, &p, detailsAboutDB, w)
 
 		valutes, _ := selectAllCurrencies(db)
 
@@ -64,7 +59,9 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 			sumFromQuerry = temp
 
 			var InDenars float64
-			currencyInDenars, err := db.Query("SELECT inDenars FROM currencies WHERE currency=(?)", inDenars)
+
+			InDenars = selectingInDenarsFromCurrenciesTable(&InDenars, db, inDenars, w, detailsAboutDB)
+			/*currencyInDenars, err := db.Query("SELECT inDenars FROM currencies WHERE currency=(?)", inDenars)
 			if err != nil {
 				opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
 			}
@@ -76,8 +73,8 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 					opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
 				}
 				InDenars = temp
-			}
-			defer currencyInDenars.Close()
+			}*/
+			//defer currencyInDenars.Close()
 			pom = sumFromQuerry * InDenars
 			p.Total = p.Total + pom
 
@@ -86,4 +83,32 @@ func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Re
 
 		opendb.Tmpl.ExecuteTemplate(w, "Show", p)
 	}
+}
+
+func scanningPaymentsTable(rows *sql.Rows, p *opendb.Payment, detailsAboutDB opendb.DbDetails, w http.ResponseWriter) {
+	//var p opendb.Payment
+	for rows.Next() {
+		err := rows.Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
+		}
+	}
+}
+
+func selectingInDenarsFromCurrenciesTable(InDenars *float64, db *sql.DB, inDenars string, w http.ResponseWriter, detailsAboutDB opendb.DbDetails) float64 {
+	currencyInDenars, err := db.Query("SELECT inDenars FROM currencies WHERE currency=(?)", inDenars)
+	defer currencyInDenars.Close()
+	if err != nil {
+		opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+	}
+	var temp float64
+	for currencyInDenars.Next() {
+
+		err = currencyInDenars.Scan(&temp)
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
+		}
+
+	}
+	return temp
 }
