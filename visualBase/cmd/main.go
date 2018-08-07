@@ -13,8 +13,8 @@ const (
 	//host     = "localhost"
 	//port     = "3306"
 	user     = "root"
-	password = "12345"
-	dbName   = "demodb"
+	password = "darko123"
+	dbName   = "goblog"
 )
 
 var tmpl = template.Must(template.ParseGlob("../form/*"))
@@ -27,6 +27,15 @@ type Payment struct {
 	Date     string
 	Total    float64
 }
+type Merchant struct {
+	Id       int
+	Username string
+	Email    string
+	Country  string
+	Age      int
+	Name     string
+	Lastname string
+}
 
 func selectDatabase() (db *sql.DB) {
 	db, err := sql.Open("mysql",
@@ -37,6 +46,85 @@ func selectDatabase() (db *sql.DB) {
 	//fmt.Println(db)
 	//defer db.Close()
 	return db
+}
+func newmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db := selectDatabase()
+		if r.Method == "POST" {
+			Username := r.FormValue("username")
+			Email := r.FormValue("email")
+			Country := r.FormValue("country")
+			Age := r.FormValue("age")
+			Name := r.FormValue("name")
+			Lastname := r.FormValue("lastname")
+			insForm, err := db.Prepare("INSERT INTO merchants(Username,mearchantUsername, mearchantEmail, mearchantCountry, mearchantAge, firstName, lastname ) VALUES(?,?,?,?,?,?,?)")
+			if err != nil {
+				panic(err.Error())
+			}
+			insForm.Exec(0, Username, Email, Country, Age, Name, Lastname)
+			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Name: " + Name + " | Lastname: " + Lastname)
+		}
+		defer db.Close()
+		http.Redirect(w, r, "/", 301)
+
+	}
+}
+func updatemerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db := selectDatabase()
+		if r.Method == "POST" {
+			Username := r.FormValue("username")
+			Email := r.FormValue("email")
+			Country := r.FormValue("country")
+			Age := r.FormValue("age")
+			Name := r.FormValue("name")
+			Lastname := r.FormValue("lastname")
+			insForm, err := db.Prepare("UPDATE merchants SET merchantUsername=(?), merchantEmail=(?), mearchantCountry=(?), mearchantAge=(?), firstName(?),lastName(?) WHERE Id=(?)")
+			if err != nil {
+				panic(err.Error())
+			}
+			insForm.Exec(0, Username, Email, Country, Age, Name, Lastname)
+			log.Println("UPDATE:  Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Name: " + Name + " | Lastname: " + Lastname)
+		}
+		defer db.Close()
+		http.Redirect(w, r, "/", 301)
+	}
+}
+func editmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func (w http.ResponseWriter, r *http.Request) {
+		db := selectDatabase()
+		Username := r.URL.Query().Get("username")
+		var m Merchant
+		err := db.QueryRow("SELECT * FROM merchants WHERE Username=(?)", Username).Scan(&m.Username, &m.Username, &m.Email, &m.Country, &m.Age, &m.Name, &m.Lastname)
+		if err != nil {
+			panic(err)
+		}
+		tmpl.ExecuteTemplate(w, "editmerchant", m)
+	}
+}
+
+func addmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "newmearchant", nil)
+	}
+}
+
+func viewmerchant(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func (w http.ResponseWriter, r *http.Request) {
+	db := selectDatabase()
+	username := r.URL.Query().Get("username")
+	rows, err := db.Query("SELECT * FROM merchants WHERE Username=(?)", username)
+	if err != nil {
+		return
+	}
+	var m Merchant
+	for rows.Next() {
+		err = rows.Scan(&m.Username, &m.Username, &m.Email, &m.Country, &m.Age, &m.Name, &m.Lastname)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
 }
 
 func home(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
@@ -206,6 +294,11 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home(db))
+	http.HandleFunc("/addmerchant", addmerchant(db))
+	http.HandleFunc("/editmerchant", editmerchant(db))
+	http.HandleFunc("/updatemerchant", updatemerchant(db))
+	http.HandleFunc("/newmerchant", newmerchant(db))
+	http.HandleFunc("/viewmerchant", viewmerchant(db))
 	http.HandleFunc("/new", new)
 	http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)

@@ -1,0 +1,15 @@
+{{ define "newmearchant" }}
+        {{ template "Header" }}
+        {{ template "Menu" }}
+<h2>New Mearchant</h2>
+<form method="POST" action="insert">
+<label> Username </label><input type="text" name="username" /><br />
+<label> Email </label><input type="text" name="Email" /><br />
+<label> Country </label><input type="text" name="Country" /><br />
+<label> Age </label><input type="text" name="age" /><br />
+<label> Name </label><input type="text" name="name" /><br />
+<label> Lastname </label><input type="text" name="lastname" /><br />
+<input type="submit" value="Save user" />
+</form>
+        {{ template "Footer" }}
+        {{ end }}

@@ -1,0 +1,14 @@
+{{ define "showmerchant" }}
+        {{ template "Header" }}
+        {{ template "Menu"  }}
+<h2> Merchant {{ .Username }} </h2>
+<p>Username: {{ .Username }}</p>
+<p>Email:  {{ .Email }}</p>
+<p>Country:  {{ .Country }}</p>
+<p>Age:  {{ .Age }}</p>
+<p>Name:  {{ .Name }}</p>
+<p>Lastname:  {{ .Lastname }}</p><br /> <a href="/edit?username={{ .Username }}">editmerchant</a></p>
+<br>
+<p>Total for {{ .Merchant }}: {{ .Total }}
+    {{ template "Footer" }}
+    {{ end }}
