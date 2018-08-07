@@ -7,7 +7,7 @@ import (
 )
 
 //Tmpl is a global template
-var Tmpl = template.Must(template.ParseGlob("form/*"))
+var Tmpl = template.Must(template.ParseGlob("../form/*"))
 
 //User the name of the user
 const (

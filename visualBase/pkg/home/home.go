@@ -4,6 +4,8 @@ import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
 	"net/http"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 //Home handler function for homepage
