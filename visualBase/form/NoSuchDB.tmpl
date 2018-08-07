@@ -1,0 +1,14 @@
+{{ define "Home" }}
+  {{ template "Header" }}
+    {{ template "Menu"  }}
+    <h1> ERROR </h1>
+    <h2>The DataBase with details:</h2>
+     <h3>Host:{{ .Host }}</h3>
+      <h3>Port:{{ .Port }}</h3>
+       <h3>User:{{ .User }}</h3>
+        <h3>Password:{{ .Password }}</h3>
+    <h3>Name:{{ .Name }}</h3>
+      <h2>does not exist</h2>
+
+  {{ template "Footer" }}
+{{ end }}

@@ -1,53 +1,27 @@
 package main
 
 import (
+	"LearningMYSQLandGOLANG/visualBase/pkg/home"
+	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
-	"html/template"
 	"log"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const (
-	//host     = "localhost"
-	//port     = "3306"
-	user     = "root"
-	password = "12345"
-	dbName   = "demodb"
-)
-
-var tmpl = template.Must(template.ParseGlob("../form/*"))
-
-type Payment struct {
-	ID       int
-	Merchant string
-	Currency string
-	Amount   float64
-	Date     string
-	Total    float64
-}
-
-func OpenDB() (db *sql.DB, e error) {
-	db, err := sql.Open("mysql", user+":"+password+"@/"+dbName)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func home(db *sql.DB, err error) func(w http.ResponseWriter, r *http.Request) {
+/*
+func home(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
-			http.Redirect(w, r, "/", 404)
+			tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
 		}
-	} else {
-		return func(w http.ResponseWriter, r *http.Request) {
-			rows, err := db.Query("SELECT * FROM payments")
-			if err != nil {
-				panic(err)
-			}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		rows, err := db.Query("SELECT * FROM payments")
+		if err != nil {
+			tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		} else {
 			var allPayments []Payment
 			for rows.Next() {
 				var p Payment
@@ -60,21 +34,22 @@ func home(db *sql.DB, err error) func(w http.ResponseWriter, r *http.Request) {
 			//fmt.Fprintln(w, allPayments)
 			tmpl.ExecuteTemplate(w, "Home", allPayments)
 		}
+
 	}
-}
+}*/
 
 func new(w http.ResponseWriter, r *http.Request) {
-	tmpl.ExecuteTemplate(w, "New", nil)
+	opendb.Tmpl.ExecuteTemplate(w, "New", nil)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
-	db, _ := OpenDB()
+	db, _ := opendb.OpenDB()
 	id := r.URL.Query().Get("id")
 	rows, err := db.Query("SELECT * FROM payments WHERE paymentID=(?)", id)
 	if err != nil {
 		return
 	}
-	var p Payment
+	var p opendb.Payment
 	for rows.Next() {
 		err = rows.Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
 		if err != nil {
@@ -119,22 +94,22 @@ func view(w http.ResponseWriter, r *http.Request) {
 	}
 	//fmt.Println(total)
 
-	tmpl.ExecuteTemplate(w, "Show", p)
+	opendb.Tmpl.ExecuteTemplate(w, "Show", p)
 }
 
 func edit(w http.ResponseWriter, r *http.Request) {
-	db, _ := OpenDB()
+	db, _ := opendb.OpenDB()
 	id := r.URL.Query().Get("id")
-	var p Payment
+	var p opendb.Payment
 	err := db.QueryRow("SELECT * FROM payments WHERE paymentID=(?)", id).Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
 	if err != nil {
 		panic(err)
 	}
-	tmpl.ExecuteTemplate(w, "Edit", p)
+	opendb.Tmpl.ExecuteTemplate(w, "Edit", p)
 }
 
 func insert(w http.ResponseWriter, r *http.Request) {
-	db, _ := OpenDB()
+	db, _ := opendb.OpenDB()
 	if r.Method == "POST" {
 		Merchant := r.FormValue("merchant")
 		Currency := r.FormValue("currency")
@@ -152,7 +127,7 @@ func insert(w http.ResponseWriter, r *http.Request) {
 }
 
 func update(w http.ResponseWriter, r *http.Request) {
-	db, _ := OpenDB()
+	db, _ := opendb.OpenDB()
 	if r.Method == "POST" {
 		Merchant := r.FormValue("merchant")
 		Currency := r.FormValue("currencies")
@@ -171,7 +146,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 }
 
 func delete(w http.ResponseWriter, r *http.Request) {
-	db, _ := OpenDB()
+	db, _ := opendb.OpenDB()
 	id := r.URL.Query().Get("id")
 	delForm, err := db.Prepare("DELETE FROM payments WHERE paymentID=?")
 	if err != nil {
@@ -206,11 +181,12 @@ func selectAllCurrencies(db *sql.DB) ([]string, error) {
 }
 
 func main() {
-	db, err := OpenDB()
-	//http.Redirect(w, r, "/", 404)
+	detailsAboutDB := opendb.DbDetails{Host: "localhost", Port: "3306", User: opendb.User, Password: opendb.Password, Name: opendb.DbName}
+	db, err := opendb.OpenDB()
+
 	defer db.Close()
 
-	http.HandleFunc("/", home(db, err))
+	http.HandleFunc("/", home.Home(db, detailsAboutDB, err))
 	http.HandleFunc("/new", new)
 	http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)
