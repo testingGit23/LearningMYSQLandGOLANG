@@ -3,41 +3,12 @@ package main
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/home"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
-	"database/sql"
-	"log"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 /*
-func home(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
-	if err != nil {
-		return func(w http.ResponseWriter, r *http.Request) {
-			tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
-		}
-	}
-	return func(w http.ResponseWriter, r *http.Request) {
-		rows, err := db.Query("SELECT * FROM payments")
-		if err != nil {
-			tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
-		} else {
-			var allPayments []Payment
-			for rows.Next() {
-				var p Payment
-				err = rows.Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
-				if err != nil {
-					panic(err)
-				}
-				allPayments = append(allPayments, p)
-			}
-			//fmt.Fprintln(w, allPayments)
-			tmpl.ExecuteTemplate(w, "Home", allPayments)
-		}
-
-	}
-}*/
-
 func new(w http.ResponseWriter, r *http.Request) {
 	opendb.Tmpl.ExecuteTemplate(w, "New", nil)
 }
@@ -178,7 +149,7 @@ func selectAllCurrencies(db *sql.DB) ([]string, error) {
 		return nil, err
 	}
 	return ret, nil
-}
+}*/
 
 func main() {
 	detailsAboutDB := opendb.DbDetails{Host: "localhost", Port: "3306", User: opendb.User, Password: opendb.Password, Name: opendb.DbName}
@@ -187,11 +158,11 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, err))
-	http.HandleFunc("/new", new)
+	/*http.HandleFunc("/new", new)
 	http.HandleFunc("/view", view)
 	http.HandleFunc("/edit", edit)
 	http.HandleFunc("/insert", insert)
 	http.HandleFunc("/update", update)
-	http.HandleFunc("/delete", delete)
+	http.HandleFunc("/delete", delete)*/
 	http.ListenAndServe(":8080", nil)
 }
