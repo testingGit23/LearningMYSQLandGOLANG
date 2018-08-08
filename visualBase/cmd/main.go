@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/insertpayment", insert.InsertPayment(db, detailsAboutDB, e))
 	http.HandleFunc("/updatepayment", update.UpdatePayment(db, detailsAboutDB, e))
 	http.HandleFunc("/deletepayment", delete.DeletePayment(db, detailsAboutDB, e))
+	http.HandleFunc("/deletemerchant", delete.Deletemerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/currencies", home.CurrenciesTable(db, detailsAboutDB, e))
 	http.HandleFunc("/newcurrency", new.NewCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/editcurrency", edit.EditCurrency(db, detailsAboutDB, e))

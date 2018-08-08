@@ -12,6 +12,7 @@
     <td>Firstname</td>
     <td>Lastname</td>
     <td>Edit</td>
+    <td>Delete</td>
 
 </tr>
 </thead>
@@ -25,6 +26,7 @@
     <td>{{ .Firstname }} </td>
     <td>{{ .Lastname }} </td>
     <td><a href="/editmerchant?usr={{ .Username }}">Edit</a></td>
+    <td><a href="/deletemerchant?usr={{ .Username }}">Delete</a></td>
 
 </tr>
 {{ end }}

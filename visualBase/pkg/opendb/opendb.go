@@ -12,8 +12,8 @@ var Tmpl = template.Must(template.ParseGlob("../form/*"))
 //User the name of the user
 const (
 	User     = "root"
-	Password = "12345"
-	DbName   = "demodb"
+	Password = "darko123"
+	DbName   = "goblog"
 )
 
 //Payment structure for info about one payment

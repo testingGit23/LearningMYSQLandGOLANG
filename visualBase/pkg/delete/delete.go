@@ -46,3 +46,21 @@ func DeleteCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		http.Redirect(w, r, "/currencies", 301)
 	}
 }
+func Deletemerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		usr := r.URL.Query().Get("usr")
+		delForm, err := db.Prepare("DELETE FROM merchants WHERE merchantUsername=?")
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+
+		}
+		delForm.Exec(usr)
+		log.Println("DELETE")
+		http.Redirect(w, r, "/merchants", 301)
+	}
+}
