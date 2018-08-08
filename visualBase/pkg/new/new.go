@@ -13,6 +13,6 @@ func New(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.Res
 		}
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		opendb.Tmpl.ExecuteTemplate(w, "New", nil)
+		opendb.Tmpl.ExecuteTemplate(w, "Newpayment", nil)
 	}
 }

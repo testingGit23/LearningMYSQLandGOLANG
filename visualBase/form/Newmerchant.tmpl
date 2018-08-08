@@ -1,0 +1,15 @@
+{{ define "Newmerchant" }}
+        {{ template "Header" }}
+        {{ template "Menu" }}
+<h2>New Merchant</h2>
+<form method="POST" action="insertmerchant">
+<label> Username </label><input type="text" name="username" /><br />
+<label> Email </label><input type="text" name="Email" /><br />
+<label> Country </label><input type="text" name="Country" /><br />
+<label> Age </label><input type="text" name="Age" /><br />
+<label> Firstname </label><input type="text" name="Firstname" /><br />
+<label> Lastname </label><input type="text" name="Lastname" /><br />
+<input type="submit" value="Save merchant" />
+</form>
+        {{ template "Footer" }}
+        {{ end }}

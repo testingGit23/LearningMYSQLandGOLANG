@@ -3,7 +3,7 @@ package main
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/delete"
 	"LearningMYSQLandGOLANG/visualBase/pkg/edit"
-	"LearningMYSQLandGOLANG/visualBase/pkg/home"
+	"LearningMYSQLandGOLANG/visualBase/pkg/payments"
 	"LearningMYSQLandGOLANG/visualBase/pkg/insert"
 	"LearningMYSQLandGOLANG/visualBase/pkg/new"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
@@ -11,7 +11,12 @@ import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/view"
 	"net/http"
 
+
 	_ "github.com/go-sql-driver/mysql"
+	"LearningMYSQLandGOLANG/visualBase/pkg/merchants"
+	"LearningMYSQLandGOLANG/visualBase/pkg/home"
+	"LearningMYSQLandGOLANG/visualBase/pkg/newmerchant"
+	"LearningMYSQLandGOLANG/visualBase/pkg/insertmerchant"
 )
 
 func main() {
@@ -21,7 +26,11 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, e))
-	http.HandleFunc("/new", new.New(db, detailsAboutDB, e))
+	http.HandleFunc("/merchants", merchants.Merchants(db, detailsAboutDB, e))
+	http.HandleFunc("/payments", payments.Payments(db, detailsAboutDB, e))
+	http.HandleFunc("/newpayments", new.New(db, detailsAboutDB, e))
+	http.HandleFunc("/newmerchant", newmerchant.Newmerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/insertmerchant", insertmerchant.Insertmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/view", view.View(db, detailsAboutDB, e))
 	http.HandleFunc("/edit", edit.Edit(db, detailsAboutDB, e))
 	http.HandleFunc("/insert", insert.Insert(db, detailsAboutDB, e))

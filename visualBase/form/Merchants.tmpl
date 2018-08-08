@@ -1,0 +1,32 @@
+{{ define "Merchants" }}
+        {{ template "Header" }}
+        {{ template "Menu"  }}
+<h1>List of all Merchants</h1>
+<table border="1">
+<thead>
+<tr>
+    <td>Username</td>
+    <td>Email</td>
+    <td>Country</td>
+    <td>Age</td>
+    <td>Firstname</td>
+    <td>Lastname</td>
+
+</tr>
+</thead>
+<tbody>
+{{ range . }}
+<tr>
+    <td>{{ .Username }}</td>
+    <td> {{ .Email }} </td>
+    <td>{{ .Country }} </td>
+    <td>{{ .Age }} </td>
+    <td>{{ .Firstname }} </td>
+    <td>{{ .Lastname }} </td>
+
+</tr>
+{{ end }}
+</tbody>
+</table>
+        {{ template "Footer" }}
+        {{ end }}

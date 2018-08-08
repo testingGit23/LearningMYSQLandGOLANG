@@ -1,0 +1,35 @@
+{{ define "Payments" }}
+  {{ template "Header" }}
+    {{ template "Menu"  }}
+     <h1>List of all Payments</h1>   
+    <h2> Registered </h2>
+    <table border="1">
+      <thead>
+      <tr>
+        <td>ID</td>
+        <td>Merchant</td>
+        <td>Currency</td>
+        <td>Amount</td>
+        <td>Date</td>
+        <td>View</td>
+        <td>Edit</td>
+        <td>Delete</td>
+      </tr>
+       </thead>
+       <tbody>
+    {{ range . }}
+      <tr>
+        <td>{{ .ID }}</td>
+        <td> {{ .Merchant }} </td>
+        <td>{{ .Currency }} </td> 
+        <td>{{ .Amount }} </td>
+        <td>{{ .Date }} </td>
+        <td><a href="/view?id={{ .ID }}">View</a></td>
+        <td><a href="/edit?id={{ .ID }}">Edit</a></td>
+        <td><a href="/delete?id={{ .ID }}">Delete</a><td>
+      </tr>
+    {{ end }}
+       </tbody>
+    </table>
+  {{ template "Footer" }}
+{{ end }}
