@@ -24,9 +24,9 @@
         <td>{{ .Currency }} </td> 
         <td>{{ .Amount }} </td>
         <td>{{ .Date }} </td>
-        <td><a href="/view?id={{ .ID }}">View</a></td>
-        <td><a href="/edit?id={{ .ID }}">Edit</a></td>
-        <td><a href="/delete?id={{ .ID }}">Delete</a><td>
+        <td><a href="/viewpayment?id={{ .ID }}">View</a></td>
+        <td><a href="/editpayment?id={{ .ID }}">Edit</a></td>
+        <td><a href="/deletepayment?id={{ .ID }}">Delete</a><td>
       </tr>
     {{ end }}
        </tbody>

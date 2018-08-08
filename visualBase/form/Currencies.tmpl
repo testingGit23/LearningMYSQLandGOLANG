@@ -7,7 +7,9 @@
       <tr>
         <td>Currencies</td>
         <td>InDenars</td>
-        <td></td>
+        <td>Edit</td>
+                <td>Delete</td>
+
       </tr>
        </thead>
        <tbody>
@@ -16,6 +18,7 @@
         <td>{{ .Currency }}</td>
         <td> {{ .InDenars }} </td>
         <td><a href="/editcurrency?curr={{ .Currency }}">Edit</a></td>
+        <td><a href="/deletecurrency?curr={{ .Currency }}">Delete</a></td>
       </tr>
     {{ end }}
        </tbody>

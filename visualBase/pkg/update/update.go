@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Update(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
@@ -29,7 +29,7 @@ func Update(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.
 			insForm.Exec(Merchant, Currency, Amount, Date, id)
 			log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
 		}
-		http.Redirect(w, r, "/", 301)
+		http.Redirect(w, r, "/payments", 301)
 	}
 }
 

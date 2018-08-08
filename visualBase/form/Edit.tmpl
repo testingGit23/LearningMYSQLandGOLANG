@@ -2,7 +2,7 @@
   {{ template "Header" }}
     {{ template "Menu" }} 
    <h2>Edit Payment</h2>  
-    <form method="POST" action="update">
+    <form method="POST" action="updatepayment">
       <input type="hidden" name="uid" value="{{ .ID }}" />
       <label> Merchant </label><input type="text" name="merchant" value="{{ .Merchant }}"><br />
       <label> Currency </label><input type="text" name="currencies" value="{{ .Currency }}"><br />

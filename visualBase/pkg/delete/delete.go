@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Delete(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+func DeletePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
@@ -24,6 +24,25 @@ func Delete(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.
 		}
 		delForm.Exec(id)
 		log.Println("DELETE")
-		http.Redirect(w, r, "/", 301)
+		http.Redirect(w, r, "/payments", 301)
+	}
+}
+
+func DeleteCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		curr := r.URL.Query().Get("curr")
+		delForm, err := db.Prepare("DELETE FROM currencies WHERE currency=?")
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+
+		}
+		delForm.Exec(curr)
+		log.Println("DELETE")
+		http.Redirect(w, r, "/currencies", 301)
 	}
 }
