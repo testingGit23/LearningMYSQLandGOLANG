@@ -34,6 +34,11 @@ type Merchant struct {
 	Lastname  string
 }
 
+type TypeCurrency struct {
+	Currency string
+	InDenars float64
+}
+
 //DbDetails structure for details about the database that is opened
 type DbDetails struct {
 	Host, Port, User, Password, Name string

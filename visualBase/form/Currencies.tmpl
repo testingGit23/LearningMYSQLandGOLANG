@@ -1,0 +1,25 @@
+{{ define "Currencies" }}
+  {{ template "Header" }}
+    {{ template "Menu"  }}
+     <h1>List of all Currencies</h1>   
+    <table border="1">
+      <thead>
+      <tr>
+        <td>Currencies</td>
+        <td>InDenars</td>
+        <td></td>
+      </tr>
+       </thead>
+       <tbody>
+    {{ range . }}
+      <tr>
+        <td>{{ .Currency }}</td>
+        <td> {{ .InDenars }} </td>
+        <td><a href="/editcurrency?curr={{ .Currency }}">Edit</a></td>
+      </tr>
+    {{ end }}
+       </tbody>
+    </table>
+    <a href="/newcurrency">New Currency</a>
+  {{ template "Footer" }}
+{{ end }}

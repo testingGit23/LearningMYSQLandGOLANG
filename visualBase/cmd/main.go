@@ -36,5 +36,10 @@ func main() {
 	http.HandleFunc("/insert", insert.Insert(db, detailsAboutDB, e))
 	http.HandleFunc("/update", update.Update(db, detailsAboutDB, e))
 	http.HandleFunc("/delete", delete.Delete(db, detailsAboutDB, e))
+	http.HandleFunc("/currencies", home.CurrenciesTable(db, detailsAboutDB, e))
+	http.HandleFunc("/newcurrency", new.NewCurrency(db, detailsAboutDB, e))
+	http.HandleFunc("/editcurrency", edit.EditCurrency(db, detailsAboutDB, e))
+	http.HandleFunc("/insertcurrency", insert.InsertCurrency(db, detailsAboutDB, e))
+	http.HandleFunc("/updatecurrency", update.UpdateCurrency(db, detailsAboutDB, e))
 	http.ListenAndServe(":8080", nil)
 }
