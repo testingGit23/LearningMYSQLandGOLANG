@@ -1,0 +1,18 @@
+{{ define "Editmerchant" }}
+        {{ template "Header" }}
+        {{ template "Menu" }}
+<h2>Edit Merchant</h2>
+<form method="POST" action="updatemerchant">
+<label> {{ .Username }} </label></br><input type="hidden" name="usr" value="{{ .Username }}">
+<label>Username: </label><input type="h" name="Username" value="{{ .Username }}"><br />
+    <label>Email: </label><input type="text" name="Email" value="{{ .Email }}"><br />
+        <label>Country: </label><input type="text" name="Country" value="{{ .Country }}"><br />
+            <label>Age: </label><input type="text" name="Age" value="{{ .Age }}"><br />
+                <label>Firstname: </label><input type="text" name="Firstname" value="{{ .Firstname }}"><br />
+                    <label>Lastname: </label><input type="text" name="Lastname" value="{{ .Lastname }}"><br />
+
+
+    <input type="submit" value="Save merchant" />
+</form><br />
+{{ template "Footer" }}
+{{ end }}

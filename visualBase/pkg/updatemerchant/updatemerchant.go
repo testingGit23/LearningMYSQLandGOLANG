@@ -1,15 +1,13 @@
-package insertmerchant
+package updatemerchant
 
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
 	"log"
 	"net/http"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
-func Insertmerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+func Updatemerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
@@ -17,20 +15,20 @@ func Insertmerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
-			Username := r.FormValue("username")
+			Username := r.FormValue("usr")
+			newUsername:= r.FormValue("Username")
 			Email := r.FormValue("Email")
 			Country := r.FormValue("Country")
 			Age := r.FormValue("Age")
 			Firstname := r.FormValue("Firstname")
 			Lastname := r.FormValue("Lastname")
-			insForm, err := db.Prepare("INSERT INTO merchants (merchantUsername, merchantEmail, merchantCountry, merchantAge, firstName, lastName) VALUES(?,?,?,?,?,?)")
+			insForm, err := db.Prepare("UPDATE merchants SET  merchantUsername=(?), merchantEmail=(?), merchantCountry=(?), merchantAge=(?), firstName=(?), lastName=(?) WHERE merchantUsername=(?)")
 			if err != nil {
 				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 			}
-			insForm.Exec(Username, Email, Country, Age, Firstname, Lastname)
+			insForm.Exec(newUsername, Email, Country, Age, Firstname, Lastname,Username)
 			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Firstname: " + Firstname + " | Lastname: " + Lastname)
 		}
-		//defer db.Close()
 		http.Redirect(w, r, "/merchants", 301)
 	}
 }

@@ -3,20 +3,21 @@ package main
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/delete"
 	"LearningMYSQLandGOLANG/visualBase/pkg/edit"
-	"LearningMYSQLandGOLANG/visualBase/pkg/payments"
 	"LearningMYSQLandGOLANG/visualBase/pkg/insert"
 	"LearningMYSQLandGOLANG/visualBase/pkg/new"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
+	"LearningMYSQLandGOLANG/visualBase/pkg/payments"
 	"LearningMYSQLandGOLANG/visualBase/pkg/update"
 	"LearningMYSQLandGOLANG/visualBase/pkg/view"
 	"net/http"
 
-
-	_ "github.com/go-sql-driver/mysql"
-	"LearningMYSQLandGOLANG/visualBase/pkg/merchants"
+	"LearningMYSQLandGOLANG/visualBase/pkg/editmerchant"
 	"LearningMYSQLandGOLANG/visualBase/pkg/home"
-	"LearningMYSQLandGOLANG/visualBase/pkg/newmerchant"
 	"LearningMYSQLandGOLANG/visualBase/pkg/insertmerchant"
+	"LearningMYSQLandGOLANG/visualBase/pkg/merchants"
+	"LearningMYSQLandGOLANG/visualBase/pkg/newmerchant"
+	"LearningMYSQLandGOLANG/visualBase/pkg/updatemerchant"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
@@ -31,6 +32,8 @@ func main() {
 	http.HandleFunc("/newpayments", new.New(db, detailsAboutDB, e))
 	http.HandleFunc("/newmerchant", newmerchant.Newmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/insertmerchant", insertmerchant.Insertmerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/editmerchant", editmerchant.Editmerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/updatemerchant", updatemerchant.Updatemerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/view", view.View(db, detailsAboutDB, e))
 	http.HandleFunc("/edit", edit.Edit(db, detailsAboutDB, e))
 	http.HandleFunc("/insert", insert.Insert(db, detailsAboutDB, e))
