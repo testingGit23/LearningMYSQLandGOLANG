@@ -7,7 +7,7 @@
       <tr>
         <td>Currencies</td>
         <td>InDenars</td>
-        
+        <td></td>
       </tr>
        </thead>
        <tbody>
@@ -15,10 +15,11 @@
       <tr>
         <td>{{ .Currency }}</td>
         <td> {{ .InDenars }} </td>
-        
+        <td><a href="/editcurrency?curr={{ .Currency }}">Edit</a></td>
       </tr>
     {{ end }}
        </tbody>
     </table>
+    
   {{ template "Footer" }}
 {{ end }}
