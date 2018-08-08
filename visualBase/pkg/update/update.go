@@ -32,3 +32,24 @@ func Update(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.
 		http.Redirect(w, r, "/", 301)
 	}
 }
+
+func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			Currency := r.FormValue("curr")
+			InDenars := r.FormValue("indenars")
+			insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+			if err != nil {
+				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+			}
+			insForm.Exec(InDenars, Currency)
+			log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
+		}
+		http.Redirect(w, r, "/currencies", 301)
+	}
+}
