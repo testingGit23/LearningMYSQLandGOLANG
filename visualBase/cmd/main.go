@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/newmerchant", new.Newmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/insertmerchant", insert.Insertmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/viewpayment", view.ViewPayment(db, detailsAboutDB, e))
+	http.HandleFunc("/viewmerchant", view.Viewmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/editpayment", edit.EditPayment(db, detailsAboutDB, e))
 	http.HandleFunc("/insertpayment", insert.InsertPayment(db, detailsAboutDB, e))
 	http.HandleFunc("/updatepayment", update.UpdatePayment(db, detailsAboutDB, e))
