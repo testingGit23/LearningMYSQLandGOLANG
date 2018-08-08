@@ -19,13 +19,13 @@ import (
 func enterFlags() []string {
 	var ret []string
 	DbName := flag.String("database", "demodb", "the name of you database")
-	flag.Parse()
-	ret = append(ret, *DbName)
+
 	User := flag.String("user", "root", "the username to make a conection to the database")
-	flag.Parse()
-	ret = append(ret, *User)
+
 	Password := flag.String("password", "12345", "the password for your username to make a conection to the database")
 	flag.Parse()
+	ret = append(ret, *DbName)
+	ret = append(ret, *User)
 	ret = append(ret, *Password)
 
 	fmt.Println(ret)
