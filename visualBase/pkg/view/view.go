@@ -30,7 +30,7 @@ func selectAllCurrencies(db *sql.DB) ([]string, error) {
 	return ret, nil
 }
 
-func View(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+func ViewPayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)

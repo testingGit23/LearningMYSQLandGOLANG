@@ -5,7 +5,7 @@
       <p>Merchant: {{ .Merchant }}</p>
       <p>Currency:  {{ .Currency }}</p>
       <p>Amount:  {{ .Amount }}</p>
-      <p>Date:  {{ .Date }}</p><br /> <a href="/edit?id={{ .ID }}">Edit</a></p>
+      <p>Date:  {{ .Date }}</p><br /> <a href="/editpayment?id={{ .ID }}">Edit</a></p>
       <br>
       <p>Total for {{ .Merchant }}: {{ .Total }}
   {{ template "Footer" }}

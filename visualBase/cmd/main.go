@@ -6,17 +6,13 @@ import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/insert"
 	"LearningMYSQLandGOLANG/visualBase/pkg/new"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
-	"LearningMYSQLandGOLANG/visualBase/pkg/payments"
 	"LearningMYSQLandGOLANG/visualBase/pkg/update"
 	"LearningMYSQLandGOLANG/visualBase/pkg/view"
 	"net/http"
-
 	"LearningMYSQLandGOLANG/visualBase/pkg/editmerchant"
-	"LearningMYSQLandGOLANG/visualBase/pkg/home"
-	"LearningMYSQLandGOLANG/visualBase/pkg/insertmerchant"
-	"LearningMYSQLandGOLANG/visualBase/pkg/merchants"
-	"LearningMYSQLandGOLANG/visualBase/pkg/newmerchant"
 	"LearningMYSQLandGOLANG/visualBase/pkg/updatemerchant"
+	"LearningMYSQLandGOLANG/visualBase/pkg/home"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -27,22 +23,23 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, e))
-	http.HandleFunc("/merchants", merchants.Merchants(db, detailsAboutDB, e))
-	http.HandleFunc("/payments", payments.Payments(db, detailsAboutDB, e))
-	http.HandleFunc("/newpayments", new.New(db, detailsAboutDB, e))
-	http.HandleFunc("/newmerchant", newmerchant.Newmerchant(db, detailsAboutDB, e))
-	http.HandleFunc("/insertmerchant", insertmerchant.Insertmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/editmerchant", editmerchant.Editmerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/updatemerchant", updatemerchant.Updatemerchant(db, detailsAboutDB, e))
-	http.HandleFunc("/view", view.View(db, detailsAboutDB, e))
-	http.HandleFunc("/edit", edit.Edit(db, detailsAboutDB, e))
-	http.HandleFunc("/insert", insert.Insert(db, detailsAboutDB, e))
-	http.HandleFunc("/update", update.Update(db, detailsAboutDB, e))
-	http.HandleFunc("/delete", delete.Delete(db, detailsAboutDB, e))
+	http.HandleFunc("/merchants", home.MerchantsTable(db, detailsAboutDB, e))
+	http.HandleFunc("/payments", home.PaymentsTable(db, detailsAboutDB, e))
+	http.HandleFunc("/newpayments", new.NewPayment(db, detailsAboutDB, e))
+	http.HandleFunc("/newmerchant", new.Newmerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/insertmerchant", insert.Insertmerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/viewpayment", view.ViewPayment(db, detailsAboutDB, e))
+	http.HandleFunc("/editpayment", edit.EditPayment(db, detailsAboutDB, e))
+	http.HandleFunc("/insertpayment", insert.InsertPayment(db, detailsAboutDB, e))
+	http.HandleFunc("/updatepayment", update.UpdatePayment(db, detailsAboutDB, e))
+	http.HandleFunc("/deletepayment", delete.DeletePayment(db, detailsAboutDB, e))
 	http.HandleFunc("/currencies", home.CurrenciesTable(db, detailsAboutDB, e))
 	http.HandleFunc("/newcurrency", new.NewCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/editcurrency", edit.EditCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/insertcurrency", insert.InsertCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/updatecurrency", update.UpdateCurrency(db, detailsAboutDB, e))
+	http.HandleFunc("/deletecurrency", delete.DeleteCurrency(db, detailsAboutDB, e))
 	http.ListenAndServe(":8080", nil)
 }
