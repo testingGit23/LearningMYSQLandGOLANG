@@ -3,15 +3,13 @@ package main
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/delete"
 	"LearningMYSQLandGOLANG/visualBase/pkg/edit"
+	"LearningMYSQLandGOLANG/visualBase/pkg/home"
 	"LearningMYSQLandGOLANG/visualBase/pkg/insert"
 	"LearningMYSQLandGOLANG/visualBase/pkg/new"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"LearningMYSQLandGOLANG/visualBase/pkg/update"
 	"LearningMYSQLandGOLANG/visualBase/pkg/view"
 	"net/http"
-	"LearningMYSQLandGOLANG/visualBase/pkg/editmerchant"
-	"LearningMYSQLandGOLANG/visualBase/pkg/updatemerchant"
-	"LearningMYSQLandGOLANG/visualBase/pkg/home"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -23,8 +21,8 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, e))
-	http.HandleFunc("/editmerchant", editmerchant.Editmerchant(db, detailsAboutDB, e))
-	http.HandleFunc("/updatemerchant", updatemerchant.Updatemerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/editmerchant", edit.EditMerchant(db, detailsAboutDB, e))
+	http.HandleFunc("/updatemerchant", update.UpdateMerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/merchants", home.MerchantsTable(db, detailsAboutDB, e))
 	http.HandleFunc("/payments", home.PaymentsTable(db, detailsAboutDB, e))
 	http.HandleFunc("/newpayments", new.NewPayment(db, detailsAboutDB, e))
@@ -41,5 +39,6 @@ func main() {
 	http.HandleFunc("/insertcurrency", insert.InsertCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/updatecurrency", update.UpdateCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/deletecurrency", delete.DeleteCurrency(db, detailsAboutDB, e))
+
 	http.ListenAndServe(":8080", nil)
 }

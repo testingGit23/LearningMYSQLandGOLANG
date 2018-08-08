@@ -53,3 +53,28 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		http.Redirect(w, r, "/currencies", 301)
 	}
 }
+
+func UpdateMerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			Username := r.FormValue("usr")
+			Email := r.FormValue("Email")
+			Country := r.FormValue("Country")
+			Age := r.FormValue("Age")
+			Firstname := r.FormValue("Firstname")
+			Lastname := r.FormValue("Lastname")
+			insForm, err := db.Prepare("UPDATE merchants SET merchantEmail=(?), merchantCountry=(?), merchantAge=(?), firstName=(?), lastName=(?) WHERE merchantUsername=(?)")
+			if err != nil {
+				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+			}
+			insForm.Exec(Email, Country, Age, Firstname, Lastname, Username)
+			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Firstname: " + Firstname + " | Lastname: " + Lastname)
+		}
+		http.Redirect(w, r, "/merchants", 301)
+	}
+}
