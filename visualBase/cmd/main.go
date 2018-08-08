@@ -15,8 +15,8 @@ import (
 )
 
 func main() {
-	detailsAboutDB := opendb.DbDetails{Host: "localhost", Port: "3306", User: opendb.User, Password: opendb.Password, Name: opendb.DbName}
-	db, e := opendb.OpenDB()
+
+	db, e, detailsAboutDB := opendb.OpenDB()
 
 	defer db.Close()
 
