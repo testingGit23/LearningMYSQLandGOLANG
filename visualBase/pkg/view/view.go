@@ -103,3 +103,34 @@ func calculatingTotal(valutes []string, db *sql.DB, w http.ResponseWriter, detai
 	}
 	return ret
 }
+
+func Viewmerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		usr := r.URL.Query().Get("usr")
+		rows, err := db.Query("SELECT * FROM merchants WHERE merchantUsername=(?)", usr)
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+
+		}
+		var m opendb.Merchant
+		ScaningMerchantTable(rows, &m, detailsAboutDB, w)
+
+
+		opendb.Tmpl.ExecuteTemplate(w, "Showmerchant", m)
+	}
+}
+
+func ScaningMerchantTable(rows *sql.Rows, m *opendb.Merchant, detailsAboutDB opendb.DbDetails, w http.ResponseWriter) {
+	//var p opendb.Payment
+	for rows.Next() {
+		err := rows.Scan(&m.Username, &m.Email, &m.Country, &m.Age, &m.Firstname, &m.Lastname)
+		if err != nil {
+			opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
+		}
+	}
+}
