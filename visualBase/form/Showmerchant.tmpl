@@ -1,0 +1,11 @@
+{{ define "Showmerchant" }}
+        {{ template "Header" }}
+        {{ template "Menu"  }}
+<h2> Username {{ .Username }} </h2>
+<p>Email: {{ .Email }}</p>
+<p>Country:  {{ .Country }}</p>
+<p>Age:  {{ .Age }}</p>
+<p>Firstname:  {{ .Firstname }}</p>
+<p>Lastname:  {{ .Lastname }}</p>
+    {{ template "Footer" }}
+    {{ end }}
