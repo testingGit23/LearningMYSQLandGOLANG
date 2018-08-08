@@ -9,14 +9,33 @@ import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"LearningMYSQLandGOLANG/visualBase/pkg/update"
 	"LearningMYSQLandGOLANG/visualBase/pkg/view"
+	"flag"
+	"fmt"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func enterFlags() []string {
+	var ret []string
+	DbName := flag.String("database", "demodb", "the name of you database")
+	flag.Parse()
+	ret = append(ret, *DbName)
+	User := flag.String("user", "root", "the username to make a conection to the database")
+	flag.Parse()
+	ret = append(ret, *User)
+	Password := flag.String("password", "12345", "the password for your username to make a conection to the database")
+	flag.Parse()
+	ret = append(ret, *Password)
+
+	fmt.Println(ret)
+	return ret
+}
+
 func main() {
-	detailsAboutDB := opendb.DbDetails{Host: "localhost", Port: "3306", User: opendb.User, Password: opendb.Password, Name: opendb.DbName}
-	db, e := opendb.OpenDB()
+	databaseInfo := enterFlags()
+
+	db, e, detailsAboutDB := opendb.OpenDB(databaseInfo)
 
 	defer db.Close()
 
