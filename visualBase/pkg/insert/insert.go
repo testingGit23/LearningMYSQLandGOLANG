@@ -32,3 +32,25 @@ func Insert(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.
 		http.Redirect(w, r, "/", 301)
 	}
 }
+
+func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			Currency := r.FormValue("currency")
+			InDenars := r.FormValue("indenars")
+			insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+			if err != nil {
+				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+			}
+			insForm.Exec(Currency, InDenars)
+			log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
+		}
+		//defer db.Close()
+		http.Redirect(w, r, "/currencies", 301)
+	}
+}
