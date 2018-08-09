@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -43,15 +44,29 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		if r.Method == "POST" {
 			Currency := r.FormValue("currency")
 			InDenars := r.FormValue("indenars")
-			insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				tc := opendb.TypeCurrency{Currency, 0}
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
+			} else {
+				tc := opendb.TypeCurrency{Currency, indenars}
+				val := opendb.ValidateCurrency(Currency, db, w)
+
+				if val == true {
+					opendb.Tmpl.ExecuteTemplate(w, "CurrencyExist", tc)
+				} else {
+					insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+					if err != nil {
+						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+					}
+					insForm.Exec(Currency, InDenars)
+					log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
+					http.Redirect(w, r, "/currencies", 301)
+
+				}
 			}
-			insForm.Exec(Currency, InDenars)
-			log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
 		}
 		//defer db.Close()
-		http.Redirect(w, r, "/currencies", 301)
 	}
 }
 

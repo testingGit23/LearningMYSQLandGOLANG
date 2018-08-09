@@ -1,0 +1,10 @@
+{{ define "NoSuchCurrency" }}
+{{template "Header"}}
+{{template "Menu"}}
+
+<p>the currency doesnt exist</p><br><br>
+<a href="/editpayment?id={{ .ID }}">TRY AGAIN</a> |
+<a href="/newcurrency">ADD IT</a>
+
+{{template "Footer"}}
+{{end}}

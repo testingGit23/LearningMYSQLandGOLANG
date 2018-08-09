@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -21,15 +22,36 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 			Currency := r.FormValue("currencies")
 			Amount := r.FormValue("amount")
 			Date := r.FormValue("date")
-			id := r.FormValue("uid")
-			insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
+			ID := r.FormValue("uid")
+			id, err := strconv.Atoi(ID)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				id = 0
 			}
-			insForm.Exec(Merchant, Currency, Amount, Date, id)
-			log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+			amount, err := strconv.ParseFloat(Amount, 64)
+			if err != nil {
+				p := opendb.Payment{id, Merchant, Currency, 0.0, Date, 0}
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
+			} else {
+				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
+				validCurrency := opendb.ValidateCurrency(Currency, db, w)
+				validMerchant := opendb.ValidateMerchant(Merchant, db, w)
+				if validCurrency == true && validMerchant == true {
+
+					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
+					if err != nil {
+						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+					}
+					insForm.Exec(Merchant, Currency, Amount, Date, id)
+					log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+					http.Redirect(w, r, "/payments", 301)
+				} else if validMerchant == false {
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchMerchant", p)
+				} else {
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchCurrency", p)
+				}
+			}
 		}
-		http.Redirect(w, r, "/payments", 301)
+
 	}
 }
 

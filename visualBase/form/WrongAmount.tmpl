@@ -1,0 +1,10 @@
+{{ define "WrongAmount" }}
+{{template "Header"}}
+{{template "Menu"}}
+
+<p>the amount should be number</p><br><br>
+<a href="/editpayment?id={{ .ID }}">TRY AGAIN</a>
+
+
+{{template "Footer"}}
+{{end}}

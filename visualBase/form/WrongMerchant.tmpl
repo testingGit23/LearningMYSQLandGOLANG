@@ -1,0 +1,9 @@
+{{ define "WrongMerchant" }}
+        {{template "Header"}}
+        {{template "Menu"}}
+
+<p>the merchant should be string</p><br><br>
+    <a href="/editmerchant?id={{ .ID }}">TRY AGAIN</a>
+
+    {{template "Footer"}}
+    {{end}}
