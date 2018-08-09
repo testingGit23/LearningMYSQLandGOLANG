@@ -30,7 +30,7 @@ func InsertPayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 			log.Println("INSERT: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
 		}
 		//defer db.Close()
-		http.Redirect(w, r, "/", 301)
+		http.Redirect(w, r, "/payments", 301)
 	}
 }
 
