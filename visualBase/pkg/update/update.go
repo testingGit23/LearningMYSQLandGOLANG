@@ -33,7 +33,7 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
 			} else {
 				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
-				val := validateCurrency(p.Currency, db, w)
+				val := opendb.ValidateCurrency(Currency, db, w)
 				if val == true {
 
 					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
@@ -52,14 +52,7 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 	}
 }
 
-func validateCurrency(currency string, db *sql.DB, w http.ResponseWriter) bool {
-	var count float64
-	err := db.QueryRow("SELECT SUM(inDenars) FROM currencies WHERE currency=(?)", currency).Scan(&count)
-	if err != nil {
-		return false
-	}
-	return true
-}
+
 
 func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
@@ -107,7 +100,7 @@ func UpdateMerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 				opendb.Tmpl.ExecuteTemplate(w, "WrongMerchant", p)
 			} else {
 				p := opendb.Merchant{Username, Email, Country,  age, Firstname, Lastname}
-				val := validateMerchant(p.Username, db, w)
+				val := opendb.ValidateMerchant(p.Username, db, w)
 				if val == true {
 
 					insForm, err := db.Prepare("UPDATE merchants SET merchantUsername=(?), merchantEmail=(?), merchantCountry=(?), merchantAge=(?), firstName=(?), lastName=(?) WHERE merchantUsername=(?)")
@@ -122,18 +115,10 @@ func UpdateMerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 				}
 			}
 
-			insForm.Exec(Email, Country, Age, Firstname, Lastname, Username)
+			insForm.Exec(Username, Email, Country, Age, Firstname, Lastname)
 			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Firstname: " + Firstname + " | Lastname: " + Lastname)
 		}
 		http.Redirect(w, r, "/merchants", 301)
 	}
 }
 
-func validateMerchant(Username string, db *sql.DB, w http.ResponseWriter) bool {
-	var count int
-	err := db.QueryRow("SELECT * FROM merchants WHERE merchantUsername=(?)", Username).Scan(&count)
-	if err != nil {
-		return false
-	}
-	return true
-}
