@@ -1,0 +1,11 @@
+{{define "DBinfo"}}
+{{template "Header"}}
+   <h1>Database info</h1>
+    <form method="POST" action="insertdbinfo">
+      <label> Database </label><input type="text" name="database" /><br />
+      <label> Username </label><input type="text" name="username" /><br />
+            <label> Password </label><input type="password" name="password" /><br />
+      <input type="submit" value="Submit" />
+    </form>
+  {{ template "Footer" }}
+{{end}}

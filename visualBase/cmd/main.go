@@ -32,13 +32,23 @@ func enterFlags() []string {
 	return ret
 }
 
+func openit(w http.ResponseWriter, r *http.Request) {
+	opendb.Tmpl.ExecuteTemplate(w, "DBinfo", nil)
+}
+
 func main() {
-	databaseInfo := enterFlags()
+	//databaseInfo := enterFlags()
 
-	db, e, detailsAboutDB := opendb.OpenDB(databaseInfo)
+	//open, details := opendb.OpenDatabase()
+	var details *[]string
+	http.HandleFunc("/asd", openit)
+	open := opendb.OpenDatabase(details)
 
+	http.HandleFunc("/insertdbinfo", open)
+
+	db, e, detailsAboutDB := opendb.OpenDB(details)
 	defer db.Close()
-
+	fmt.Println(detailsAboutDB)
 	http.HandleFunc("/", home.Home(db, detailsAboutDB, e))
 	http.HandleFunc("/editmerchant", edit.EditMerchant(db, detailsAboutDB, e))
 	http.HandleFunc("/updatemerchant", update.UpdateMerchant(db, detailsAboutDB, e))
@@ -63,4 +73,3 @@ func main() {
 
 	http.ListenAndServe(":3030", nil)
 }
-
