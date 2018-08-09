@@ -1,0 +1,10 @@
+{{ define "CurrencyExist" }}
+{{template "Header"}}
+{{template "Menu"}}
+
+<p>the currency already exist</p><br><br>
+<a href="/editcurrency?curr={{ .Currency }}">TRY AGAIN</a> |
+
+
+{{template "Footer"}}
+{{end}}
