@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -20,17 +21,45 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 			Merchant := r.FormValue("merchant")
 			Currency := r.FormValue("currencies")
 			Amount := r.FormValue("amount")
+
 			Date := r.FormValue("date")
-			id := r.FormValue("uid")
-			insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
+			ID := r.FormValue("uid")
+			id, err := strconv.Atoi(ID)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				id = 0
 			}
-			insForm.Exec(Merchant, Currency, Amount, Date, id)
-			log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+			amount, err := strconv.ParseFloat(Amount, 64)
+			if err != nil {
+				p := opendb.Payment{id, Merchant, Currency, 0.0, Date, 0}
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
+			} else {
+				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
+				val := validateCurrency(p.Currency, db, w)
+				if val == true {
+
+					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
+					if err != nil {
+						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+					}
+					insForm.Exec(Merchant, Currency, Amount, Date, id)
+					log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+					http.Redirect(w, r, "/payments", 301)
+				} else {
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchCurrency", p)
+				}
+			}
 		}
-		http.Redirect(w, r, "/payments", 301)
+
 	}
+}
+
+func validateCurrency(currency string, db *sql.DB, w http.ResponseWriter) bool {
+	var count int
+	err := db.QueryRow("SELECT SUM(inDenars) FROM currencies WHERE currency=(?)", currency).Scan(&count)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
