@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"net/http"
 )
 
 //Tmpl is a global template
@@ -50,4 +51,13 @@ func OpenDB(databaseInfo []string) (db *sql.DB, e error, detailsAboutDB DbDetail
 	}
 
 	return db, nil, detailsAboutDB
+}
+
+func ValidateCurrency(currency string, db *sql.DB, w http.ResponseWriter) bool {
+	var count int
+	err := db.QueryRow("SELECT SUM(inDenars) FROM currencies WHERE currency=(?)", currency).Scan(&count)
+	if err != nil {
+		return false
+	}
+	return true
 }

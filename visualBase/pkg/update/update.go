@@ -34,7 +34,7 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
 			} else {
 				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
-				val := validateCurrency(p.Currency, db, w)
+				val := opendb.ValidateCurrency(p.Currency, db, w)
 				if val == true {
 
 					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
@@ -51,15 +51,6 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 		}
 
 	}
-}
-
-func validateCurrency(currency string, db *sql.DB, w http.ResponseWriter) bool {
-	var count int
-	err := db.QueryRow("SELECT SUM(inDenars) FROM currencies WHERE currency=(?)", currency).Scan(&count)
-	if err != nil {
-		return false
-	}
-	return true
 }
 
 func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
