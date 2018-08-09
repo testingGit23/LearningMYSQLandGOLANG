@@ -33,8 +33,9 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
 			} else {
 				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
-				val := opendb.ValidateCurrency(Currency, db, w)
-				if val == true {
+				validCurrency := opendb.ValidateCurrency(Currency, db, w)
+				validMerchant := opendb.ValidateMerchant(Merchant, db, w)
+				if validCurrency == true && validMerchant == true {
 
 					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")
 					if err != nil {
@@ -43,6 +44,8 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 					insForm.Exec(Merchant, Currency, Amount, Date, id)
 					log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
 					http.Redirect(w, r, "/payments", 301)
+				} else if validMerchant == false {
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchMerchant", p)
 				} else {
 					opendb.Tmpl.ExecuteTemplate(w, "NoSuchCurrency", p)
 				}
@@ -51,8 +54,6 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 
 	}
 }
-
-
 
 func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
@@ -87,38 +88,15 @@ func UpdateMerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 			Email := r.FormValue("Email")
 			Country := r.FormValue("Country")
 			Age := r.FormValue("Age")
-			age, err := strconv.Atoi(Age)
-			if err != nil {
-				age = 0
-			}
 			Firstname := r.FormValue("Firstname")
 			Lastname := r.FormValue("Lastname")
 			insForm, err := db.Prepare("UPDATE merchants SET merchantEmail=(?), merchantCountry=(?), merchantAge=(?), firstName=(?), lastName=(?) WHERE merchantUsername=(?)")
-
 			if err != nil {
-				p := opendb.Merchant{Username, Email, Country,  age, Firstname, Lastname}
-				opendb.Tmpl.ExecuteTemplate(w, "WrongMerchant", p)
-			} else {
-				p := opendb.Merchant{Username, Email, Country,  age, Firstname, Lastname}
-				val := opendb.ValidateMerchant(p.Username, db, w)
-				if val == true {
-
-					insForm, err := db.Prepare("UPDATE merchants SET merchantUsername=(?), merchantEmail=(?), merchantCountry=(?), merchantAge=(?), firstName=(?), lastName=(?) WHERE merchantUsername=(?)")
-					if err != nil {
-						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
-					}
-					insForm.Exec(Username, Email, Country, Age, Firstname, Lastname)
-					log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Firstname: " + Firstname + " | Lastname: " + Lastname)
-					http.Redirect(w, r, "/merchants", 301)
-				} else {
-					opendb.Tmpl.ExecuteTemplate(w, "NoSuchMerchant", p)
-				}
+				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 			}
-
-			insForm.Exec(Username, Email, Country, Age, Firstname, Lastname)
+			insForm.Exec(Email, Country, Age, Firstname, Lastname, Username)
 			log.Println("INSERT: Username: " + Username + " | Email: " + Email + " | Country: " + Country + " | Age: " + Age + " | Firstname: " + Firstname + " | Lastname: " + Lastname)
 		}
 		http.Redirect(w, r, "/merchants", 301)
 	}
 }
-

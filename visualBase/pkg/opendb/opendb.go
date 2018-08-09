@@ -67,8 +67,8 @@ func ValidateCurrency(currency string, db *sql.DB, w http.ResponseWriter) bool {
 }
 
 func ValidateMerchant(Username string, db *sql.DB, w http.ResponseWriter) bool {
-	var count string
-	err := db.QueryRow("SELECT * FROM merchants WHERE merchantUsername=(?)", Username).Scan(&count)
+	var count int
+	err := db.QueryRow("SELECT SUM(merchantAge) FROM merchants WHERE merchantUsername=(?)", Username).Scan(&count)
 	if err != nil {
 		return false
 	}
