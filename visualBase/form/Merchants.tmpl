@@ -1,8 +1,8 @@
 {{ define "Merchants" }}
 {{ template "Header" }}
 {{template "Menu"}}
- <h1>List of all Merchants</h1> 
-<table border="1">
+ <h1> <center> List of all Merchants </center> </h1>
+<table border="1" align="center">
 <thead>
 <tr>
     <td>Username</td>
@@ -28,6 +28,8 @@
 {{ end }}
 </tbody>
 </table>
-<a href="/newmerchant">New Merchant</a>
+<div style="text-align: center">
+<a href="/newmerchant"> <h2> NEW MERCHANT</h2></a>
+</div>
         {{ template "Footer" }}
         {{ end }}
