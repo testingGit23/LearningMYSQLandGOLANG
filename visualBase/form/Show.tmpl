@@ -2,11 +2,11 @@
   {{ template "Header" }}
     {{ template "Menu"  }}
     <h2> Payment {{ .ID }} </h2>
-      <p>Merchant: {{ .Merchant }}</p>
-      <p>Currency:  {{ .Currency }}</p>
-      <p>Amount:  {{ .Amount }}</p>
-      <p>Date:  {{ .Date }}</p><br /> <a href="/editpayment?id={{ .ID }}">Edit</a></p>
+      <span>Merchant: </span><span>{{ .Merchant }}</span>
+      <span>Currency: </span><span> {{ .Currency }}</span>
+      <span>Amount: </span><span> {{ .Amount }}</span>
+      <span>Date:  </span><span>{{ .Date }}</span><br /> <a href="/editpayment?id={{ .ID }}">Edit</a>
       <br>
-      <p>Total for {{ .Merchant }}: {{ .Total }}
+      <p>Total for {{ .Merchant }}: {{ .Total }}</p>
   {{ template "Footer" }}
 {{ end }}
