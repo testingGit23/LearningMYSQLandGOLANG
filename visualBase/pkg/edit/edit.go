@@ -19,9 +19,12 @@ func EditPayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w 
 		var p opendb.Payment
 		err := db.QueryRow("SELECT * FROM payments WHERE paymentID=(?)", id).Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
 		if err != nil {
-			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+			//err := db.QueryRow("SELECT * FROM payments WHERE paymentID=(?)", id).Scan(&p.ID, &p.Merchant, &p.Currency, &p.Amount, &p.Date)
+			opendb.Tmpl.ExecuteTemplate(w, "EditPayment", p)
+			//opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+		}else {
+			opendb.Tmpl.ExecuteTemplate(w, "EditPayment", p)
 		}
-		opendb.Tmpl.ExecuteTemplate(w, "EditPayment", p)
 	}
 }
 

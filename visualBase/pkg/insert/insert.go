@@ -23,15 +23,42 @@ func InsertPayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 			Currency := r.FormValue("currency")
 			Amount := r.FormValue("amount")
 			Date := r.FormValue("date")
-			insForm, err := db.Prepare("INSERT INTO payments(paymentID,merchantUsername, currency, amount, dateOfPayment) VALUES(?,?,?,?,?)")
+			ID := r.FormValue("uid")
+			id, err := strconv.Atoi(ID)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				id = 0
 			}
-			insForm.Exec(0, Merchant, Currency, Amount, Date)
-			log.Println("INSERT: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+			amount, err := strconv.ParseFloat(Amount, 64)
+			if err != nil {
+				p := opendb.Payment{id, Merchant, Currency, 0.0, Date, 0}
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
+			} else {
+				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
+				validCurrency := validate.ValidateCurrency(Currency, db, w)
+				validMerchant := validate.ValidateMerchant(Merchant, db, w)
+				if validCurrency == true && validMerchant == true {
+
+					insForm, err := db.Prepare("INSERT INTO payments(paymentID,merchantUsername, currency, amount, dateOfPayment) VALUES(?,?,?,?,?)")
+					if err != nil {
+						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+					}
+					insForm.Exec(Merchant, Currency, Amount, Date, id)
+					log.Println("UPDATE: Merchant: " + Merchant + " | Currency: " + Currency + " | Amount: " + Amount + " | Date: " + Date)
+					http.Redirect(w, r, "/payments", 301)
+				} else if validMerchant == false {
+					/*p := opendb.Payment{id, " ", Currency, amount, Date, 0}
+					insForm, err := db.Prepare("INSERT INTO payments(paymentID,merchantUsername, currency, amount, dateOfPayment) VALUES(?,?,?,?,?)")
+					if err != nil {
+						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+					}
+					insForm.Exec("", Currency, Amount, Date, id)*/
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchMerchant", p)
+				} else {
+					opendb.Tmpl.ExecuteTemplate(w, "NoSuchCurrency", p)
+				}
+				http.Redirect(w, r, "/payments", 301)
+			}
 		}
-		//defer db.Close()
-		http.Redirect(w, r, "/payments", 301)
 	}
 }
 
