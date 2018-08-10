@@ -1,6 +1,7 @@
 package update
 
 import (
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
 	"log"
@@ -33,8 +34,8 @@ func UpdatePayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmount", p)
 			} else {
 				p := opendb.Payment{id, Merchant, Currency, amount, Date, 0}
-				validCurrency := opendb.ValidateCurrency(Currency, db, w)
-				validMerchant := opendb.ValidateMerchant(Merchant, db, w)
+				validCurrency := validate.ValidateCurrency(Currency, db, w)
+				validMerchant := validate.ValidateMerchant(Merchant, db, w)
 				if validCurrency == true && validMerchant == true {
 
 					insForm, err := db.Prepare("UPDATE payments SET merchantUsername=(?), currency=(?), amount=(?), dateOfPayment=(?) WHERE paymentID=(?)")

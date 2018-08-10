@@ -1,6 +1,7 @@
 package insert
 
 import (
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
 	"log"
@@ -50,7 +51,7 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
 			} else {
 				tc := opendb.TypeCurrency{Currency, indenars}
-				val := opendb.ValidateCurrency(Currency, db, w)
+				val := validate.ValidateCurrency(Currency, db, w)
 
 				if val == true {
 					opendb.Tmpl.ExecuteTemplate(w, "CurrencyExist", tc)
