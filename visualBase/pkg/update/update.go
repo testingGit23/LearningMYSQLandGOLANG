@@ -1,8 +1,8 @@
 package update
 
 import (
-	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"database/sql"
 	"log"
 	"net/http"
@@ -66,6 +66,10 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		if r.Method == "POST" {
 			Currency := r.FormValue("curr")
 			InDenars := r.FormValue("indenars")
+			_, e := strconv.ParseFloat(InDenars, 64)
+			if e != nil {
+				panic(e)
+			}
 			insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
 			if err != nil {
 				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)

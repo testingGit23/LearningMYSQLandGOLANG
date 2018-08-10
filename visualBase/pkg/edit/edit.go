@@ -32,13 +32,18 @@ func EditCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w
 		}
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		curr := r.URL.Query().Get("curr")
 		var c opendb.TypeCurrency
 		err := db.QueryRow("SELECT * FROM currencies WHERE currency=(?)", curr).Scan(&c.Currency, &c.InDenars)
 		if err != nil {
-			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
+			tc := opendb.TypeCurrency{curr, 0.0}
+			opendb.Tmpl.ExecuteTemplate(w, "EditCurrency", tc)
+			//opendb.Tmpl.ExecuteTemplate(w, "ScanError", detailsAboutDB)
+		} else {
+			opendb.Tmpl.ExecuteTemplate(w, "EditCurrency", c)
 		}
-		opendb.Tmpl.ExecuteTemplate(w, "EditCurrency", c)
+
 	}
 }
 

@@ -1,8 +1,8 @@
 package insert
 
 import (
-	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"database/sql"
 	"log"
 	"net/http"
@@ -48,7 +48,20 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
 				tc := opendb.TypeCurrency{Currency, 0}
+				insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(Currency, 0)
+				log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
+				/*insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(Currency, 0)
+				log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
+				http.Redirect(w, r, "/currencies", 301)*/
 			} else {
 				tc := opendb.TypeCurrency{Currency, indenars}
 				val := validate.ValidateCurrency(Currency, db, w)
@@ -67,6 +80,7 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 				}
 			}
 		}
+		//http.Redirect(w, r, "/currencies", 301)
 		//defer db.Close()
 	}
 }
