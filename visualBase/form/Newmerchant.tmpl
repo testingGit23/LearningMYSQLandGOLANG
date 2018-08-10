@@ -2,13 +2,13 @@
         {{ template "Header" }}
         {{ template "Menu" }}
 <h1>New Merchant</h1>
-<form method="POST" action="insertmerchant">
-<label> Username </label><input type="text" name="username" /><br />
-<label> Email </label><input type="text" name="Email" /><br />
-<label> Country </label><input type="text" name="Country" /><br />
-<label> Age </label><input type="text" name="Age" /><br />
-<label> Firstname </label><input type="text" name="Firstname" /><br />
-<label> Lastname </label><input type="text" name="Lastname" /><br />
+<form method="POST" action="insertmerchant" style="width:256px; margin: auto">
+<label style="float:left; margin-bottom: 5px"> Username </label><input type="text" name="username" style="float:right; margin-bottom: 5px"/><br />
+<label style="float:left; margin-bottom: 5px"> Email   </label><input type="text" name="Email" style="float:right; margin-bottom: 5px"/><br />
+<label style="float:left; margin-bottom: 5px"> Country </label><input type="text" name="Country" style="float:right; margin-bottom: 5px"/><br />
+<label style="float:left; margin-bottom: 5px"> Age    </label><input type="text" name="Age" style="float:right; margin-bottom: 5px"/><br />
+<label style="float:left; margin-bottom: 5px"> Firstname </label><input type="text" name="Firstname" style="float:right; margin-bottom: 5px"/><br />
+<label style="float:left; margin-bottom: 5px"> Lastname </label><input type="text" name="Lastname" style="float:right; margin-bottom: 5px"/><br />
 <input type="submit" value="Save merchant" />
 </form>
         {{ template "Footer" }}

@@ -2,16 +2,17 @@
         {{ template "Header" }}
         {{ template "Menu" }}
 <h2>Edit Merchant</h2>
-<form method="POST" action="updatemerchant">
-<label>Username: {{ .Username }} </label></br><input type="hidden" name="usr" value="{{ .Username }}">
-    <label>Email: </label><input type="text" name="Email" value="{{ .Email }}"><br />
-        <label>Country: </label><input type="text" name="Country" value="{{ .Country }}"><br />
-            <label>Age: </label><input type="text" name="Age" value="{{ .Age }}"><br />
-                <label>Firstname: </label><input type="text" name="Firstname" value="{{ .Firstname }}"><br />
-                    <label>Lastname: </label><input type="text" name="Lastname" value="{{ .Lastname }}"><br />
+<form method="POST" action="updatemerchant" style="width:300px; margin: auto">
+<label  style="float:left; margin-bottom: 5px">Username:</label> <span style=" margin-bottom: 5px">{{ .Username }} </span></br>
+    <label  style="float:left; margin-bottom: 5px; width: 80px ;text-align: left; padding-top:2px; margin-left: -68px">Email: </label><input type="text" name="Email" value="{{ .Email }}" style="float:right; margin-bottom: 5px; margin-left:35px;    margin-top: 4px;"><br />
+        <label  style="float:left; margin-bottom: 5px;width:80px;text-align: left;     padding-top: 5px;margin-left: -80px">Country: </label><input type="text" name="Country" value="{{ .Country }}" style="float:right; margin-bottom: 5px"><br />
+            <label style="float:left; margin-bottom: 5px; width: 80px ;text-align: left">Age: </label><input type="text" name="Age" value="{{ .Age }}" style="float:right; margin-bottom: 5px"><br />
+                <label style="float:left; margin-bottom: 5px">Firstname: </label><input type="text" name="Firstname" value="{{ .Firstname }}" style="float:right; margin-bottom: 5px"><br />
+                    <label style="float:left; margin-bottom: 5px">Lastname: </label><input type="text" name="Lastname" value="{{ .Lastname }}" style="float:right; margin-bottom: 5px"><br />
 
 
-    <input type="submit" value="Save merchant" />
+    <input type="submit" value="Save merchant" style="    margin-left: 14px;"/>
+    <input type="hidden" name="usr" value="{{ .Username }}">
 </form><br />
 {{ template "Footer" }}
 {{ end }}

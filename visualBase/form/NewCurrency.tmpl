@@ -2,9 +2,9 @@
   {{ template "Header" }}
     {{ template "Menu" }} 
 <h1>New Currency</h1>
-    <form method="POST" action="insertcurrency">
-      <label> Currency </label><input type="text" name="currency" /><br />
-      <label> Indenars </label><input type="text" name="indenars" /><br />
+    <form method="POST" action="insertcurrency" style="width:256px; margin: auto">
+      <label style="float:left; margin-bottom: 5px"> Currency </label><input type="text" name="currency"  style="float:right; margin-bottom: 5px"/><br />
+      <label style="float:left; margin-bottom: 5px"> Indenars </label><input type="text" name="indenars"  style="float:right; margin-bottom: 5px"/><br />
       <input type="submit" value="Save currency" />
     </form>
   {{ template "Footer" }}

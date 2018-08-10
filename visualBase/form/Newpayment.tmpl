@@ -2,11 +2,11 @@
   {{ template "Header" }}
     {{ template "Menu" }} 
    <h1> New Payment </h1>
-    <form method="POST" action="insertpayment">
-      <label> Merchant </label><input type="text" name="merchant" /><br />
-      <label> Currency </label><input type="text" name="currency" /><br />
-      <label> Amount </label><input type="text" name="amount" /><br />
-      <label> Date </label><input type="text" name="date" /><br />
+    <form method="POST" action="insertpayment" style="width:256px; margin: auto">
+      <label style="float:left; margin-bottom: 5px"> Merchant </label><input type="text" name="merchant" style="float:right; margin-bottom: 5px" /><br />
+      <label style="float:left; margin-bottom: 5px"> Currency </label><input type="text" name="currency" style="float:right; margin-bottom: 5px" /><br />
+      <label style="float:left; margin-bottom: 5px"> Amount </label><input type="text" name="amount" style="float:right; margin-bottom: 5px" /><br />
+      <label style="float:left; margin-bottom: 5px"> Date </label><input type="text" name="date" style="float:right; margin-bottom: 5px" /><br />
       <input type="submit" value="Save user" />
     </form>
   {{ template "Footer" }}

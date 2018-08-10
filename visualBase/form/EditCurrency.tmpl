@@ -5,7 +5,7 @@
     <form method="POST" action="updatecurrency">
       <label> {{ .Currency }} </label></br><input type="hidden" name="curr" value="{{ .Currency }}">
       <label>InDenars: </label><input type="text" name="indenars" value="{{ .InDenars }}"><br />
-      <input type="submit" value="Save currency" />
+      <input type="submit" value="Save currency" style="    margin-top: 5px;" />
     </form><br />    
   {{ template "Footer" }}
 {{ end }}
