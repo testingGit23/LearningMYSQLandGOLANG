@@ -61,9 +61,5 @@ func main() {
 	http.HandleFunc("/updatecurrency", update.UpdateCurrency(db, detailsAboutDB, e))
 	http.HandleFunc("/deletecurrency", delete.DeleteCurrency(db, detailsAboutDB, e))
 
-<<<<<<< HEAD
-	http.ListenAndServe(":1234", nil)
-=======
 	http.ListenAndServe(":3333", nil)
->>>>>>> master
 }

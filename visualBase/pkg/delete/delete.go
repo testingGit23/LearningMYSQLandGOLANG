@@ -3,7 +3,6 @@ package delete
 import (
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -38,10 +37,6 @@ func DeleteCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 	return func(w http.ResponseWriter, r *http.Request) {
 		curr := r.URL.Query().Get("curr")
 		delForm, err := db.Prepare("DELETE FROM currencies WHERE currency=(?)")
-<<<<<<< HEAD
-		fmt.Println(curr)
-=======
->>>>>>> master
 		if err != nil {
 			opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 

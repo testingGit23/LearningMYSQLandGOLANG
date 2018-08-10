@@ -68,7 +68,6 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 			InDenars := r.FormValue("indenars")
 			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
-<<<<<<< HEAD
 				indenars = 0.0
 				tc := opendb.TypeCurrency{Currency, indenars}
 
@@ -78,15 +77,6 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 				}
 				insForm.Exec(Currency, indenars)
 				log.Println("INSERT: currency: " + Currency + " | inDenars: " + InDenars)
-=======
-				tc := opendb.TypeCurrency{Currency, 0}
-				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
-				if err != nil {
-					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
-				}
-				insForm.Exec(0, Currency)
-				log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
->>>>>>> master
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
 			} else {
 				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
