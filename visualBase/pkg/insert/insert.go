@@ -45,23 +45,19 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		if r.Method == "POST" {
 			Currency := r.FormValue("currency")
 			InDenars := r.FormValue("indenars")
+
 			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
-				tc := opendb.TypeCurrency{Currency, 0}
+				indenars = 0.0
+				tc := opendb.TypeCurrency{Currency, indenars}
+
 				insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
 				if err != nil {
 					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 				}
-				insForm.Exec(Currency, 0)
-				log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
+				insForm.Exec(Currency, indenars)
+				log.Println("INSERT: currency: " + Currency + " | inDenars: " + InDenars)
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
-				/*insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
-				if err != nil {
-					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
-				}
-				insForm.Exec(Currency, 0)
-				log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
-				http.Redirect(w, r, "/currencies", 301)*/
 			} else {
 				tc := opendb.TypeCurrency{Currency, indenars}
 				val := validate.ValidateCurrency(Currency, db, w)
@@ -73,7 +69,7 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 					if err != nil {
 						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 					}
-					insForm.Exec(Currency, InDenars)
+					insForm.Exec(Currency, indenars)
 					log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
 					http.Redirect(w, r, "/currencies", 301)
 

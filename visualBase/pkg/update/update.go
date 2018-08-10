@@ -66,18 +66,28 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		if r.Method == "POST" {
 			Currency := r.FormValue("curr")
 			InDenars := r.FormValue("indenars")
-			_, e := strconv.ParseFloat(InDenars, 64)
-			if e != nil {
-				panic(e)
-			}
-			insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				indenars = 0.0
+				tc := opendb.TypeCurrency{Currency, indenars}
+
+				insForm, err := db.Prepare("INSERT INTO currencies (currency,inDenars) VALUES(?,?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(Currency, indenars)
+				log.Println("INSERT: currency: " + Currency + " | inDenars: " + InDenars)
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
+			} else {
+				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(indenars, Currency)
+				log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
 			}
-			insForm.Exec(InDenars, Currency)
-			log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
+			http.Redirect(w, r, "/currencies", 301)
 		}
-		http.Redirect(w, r, "/currencies", 301)
 	}
 }
 
