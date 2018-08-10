@@ -21,7 +21,7 @@ func EditPayment(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w 
 		if err != nil {
 			opendb.Tmpl.ExecuteTemplate(w, "NoSuchDB", detailsAboutDB)
 		}
-		opendb.Tmpl.ExecuteTemplate(w, "Edit", p)
+		opendb.Tmpl.ExecuteTemplate(w, "EditPayment", p)
 	}
 }
 
