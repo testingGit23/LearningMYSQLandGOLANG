@@ -1,8 +1,8 @@
 package update
 
 import (
-	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"database/sql"
 	"log"
 	"net/http"
@@ -66,14 +66,26 @@ func UpdateCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 		if r.Method == "POST" {
 			Currency := r.FormValue("curr")
 			InDenars := r.FormValue("indenars")
-			insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
-				opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				tc := opendb.TypeCurrency{Currency, 0}
+				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(0, Currency)
+				log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
+				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
+			} else {
+				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(indenars, Currency)
+				log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
 			}
-			insForm.Exec(InDenars, Currency)
-			log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
+			http.Redirect(w, r, "/currencies", 301)
 		}
-		http.Redirect(w, r, "/currencies", 301)
 	}
 }
 

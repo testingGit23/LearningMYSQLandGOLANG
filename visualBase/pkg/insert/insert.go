@@ -1,8 +1,8 @@
 package insert
 
 import (
-	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"LearningMYSQLandGOLANG/visualBase/pkg/opendb"
+	"LearningMYSQLandGOLANG/visualBase/pkg/validate"
 	"database/sql"
 	"log"
 	"net/http"
@@ -48,6 +48,12 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 			indenars, err := strconv.ParseFloat(InDenars, 64)
 			if err != nil {
 				tc := opendb.TypeCurrency{Currency, 0}
+				insForm, err := db.Prepare("UPDATE currencies SET inDenars=(?) WHERE currency=(?)")
+				if err != nil {
+					opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
+				}
+				insForm.Exec(0, Currency)
+				log.Println("UPDATE: currency: " + Currency + " | inDenars: " + InDenars)
 				opendb.Tmpl.ExecuteTemplate(w, "WrongAmountForNewCurrency", tc)
 			} else {
 				tc := opendb.TypeCurrency{Currency, indenars}
@@ -60,7 +66,7 @@ func InsertCurrency(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func
 					if err != nil {
 						opendb.Tmpl.ExecuteTemplate(w, "PreparedError", detailsAboutDB)
 					}
-					insForm.Exec(Currency, InDenars)
+					insForm.Exec(Currency, indenars)
 					log.Println("INSERT: Currency: " + Currency + " | inDenars: " + InDenars)
 					http.Redirect(w, r, "/currencies", 301)
 
