@@ -103,7 +103,7 @@ func calculatingTotal(valutes []string, db *sql.DB, w http.ResponseWriter, detai
 	}
 	return ret
 }
-
+git
 func Viewmerchant(db *sql.DB, detailsAboutDB opendb.DbDetails, err error) func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
