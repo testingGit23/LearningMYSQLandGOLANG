@@ -1,0 +1,14 @@
+{{ define "EditPayment" }}
+  {{ template "Header" }}
+    {{ template "Menu" }} 
+   <h2>Edit Payment</h2>  
+    <form method="POST" action="updatepayment" style="width:256px; margin: auto">
+      <input type="hidden" name="uid" value="{{ .ID }}" />
+      <label style="float:left; margin-bottom: 5px"> Merchant </label><input type="text" name="merchant" value="{{ .Merchant }}"  style="float:right; margin-bottom: 5px"><br />
+      <label style="float:left; margin-bottom: 5px"> Currency </label><input type="text" name="currencies" value="{{ .Currency }}"  style="float:right; margin-bottom: 5px"><br />
+      <label style="float:left; margin-bottom: 5px"> Amount </label><input type="text" name="amount" value="{{ .Amount }}"  style="float:right; margin-bottom: 5px"><br />
+      <label style="float:left; margin-bottom: 5px"> Date </label><input type="text" name="date" value="{{ .Date }}" style="float:right; margin-bottom: 5px"><br />
+      <input type="submit" value="Save user" />
+    </form><br />    
+  {{ template "Footer" }}
+{{ end }}
